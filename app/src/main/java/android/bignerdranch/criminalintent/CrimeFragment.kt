@@ -10,6 +10,9 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import java.util.*
+
+private const val ARG_CRIME_ID = "crime_id"
 
 class CrimeFragment : Fragment() {
 
@@ -20,7 +23,8 @@ class CrimeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        crime = Crime()
+        val crimeId = arguments?.getSerializable(ARG_CRIME_ID) as UUID
+        crime = CrimeLab.get().getCrime(crimeId) ?: Crime()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -52,7 +56,10 @@ class CrimeFragment : Fragment() {
             }
         }
         //Wire up the text lisntener to the crime title text field
-        titleField.addTextChangedListener(titleWatcher)
+        titleField.apply {
+            setText(crime.title)
+            addTextChangedListener(titleWatcher)
+        }
 
         //Update the button text and enabled flag
         dateButton.apply {
@@ -62,11 +69,23 @@ class CrimeFragment : Fragment() {
 
         //Wire up the checkbox via lambda
         solvedCheckBox.apply {
+            isChecked = crime.isSolved
             setOnCheckedChangeListener { _, isChecked ->
                 crime.isSolved = isChecked
             }
         }
 
         return view
+    }
+
+    companion object {
+        fun newInstance(crimeId: UUID): CrimeFragment {
+            val args = Bundle().apply {
+                putSerializable(ARG_CRIME_ID, crimeId)
+            }
+            return CrimeFragment().apply {
+                arguments = args
+            }
+        }
     }
 }
