@@ -1,5 +1,6 @@
 package android.bignerdranch.criminalintent
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,11 @@ class CrimeListFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateUI()
+    }
+
     private inner class CrimeHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         private lateinit var crime: Crime
@@ -64,7 +70,9 @@ class CrimeListFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
-            Toast.makeText(context, "${crime.title} clicked!", Toast.LENGTH_SHORT).show()
+
+            val intent = CrimeActivity.newIntent(requireContext(), crime.id)
+            startActivity(intent)
         }
     }
 
@@ -88,7 +96,12 @@ class CrimeListFragment : Fragment() {
         val crimeLab = CrimeLab.get()
         val crimes = crimeLab.getCrimes()
 
-        adapter = CrimeAdapter(crimes)
-        crimeRecyclerView.adapter = adapter
+        adapter?.let {
+            it.crimes = crimes
+            it.notifyDataSetChanged()
+        } ?: run {
+            adapter = CrimeAdapter(crimes)
+            crimeRecyclerView.adapter = adapter
+        }
     }
 }
