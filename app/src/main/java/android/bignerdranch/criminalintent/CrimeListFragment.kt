@@ -71,7 +71,7 @@ class CrimeListFragment : Fragment() {
 
         override fun onClick(v: View?) {
 
-            val intent = CrimeActivity.newIntent(requireContext(), crime.id)
+            val intent = CrimePagerActivity.newIntent(requireContext(), crime.id)
             startActivity(intent)
         }
     }
