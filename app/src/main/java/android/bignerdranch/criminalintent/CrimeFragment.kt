@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import java.util.*
 
 private const val ARG_CRIME_ID = "crime_id"
+private const val DIALOG_DATE = "DialogDate"
 
 class CrimeFragment : Fragment() {
 
@@ -61,10 +62,13 @@ class CrimeFragment : Fragment() {
             addTextChangedListener(titleWatcher)
         }
 
-        //Update the button text and enabled flag
-        dateButton.apply {
-            text = crime.date.toString()
-            isEnabled = false
+        //Update the button text and OnClickListener
+        dateButton.text = crime.date.toString()
+        dateButton.setOnClickListener {
+            DatePickerFragment().apply {
+                val fragmentManager = this@CrimeFragment.fragmentManager
+                show(fragmentManager, DIALOG_DATE)
+            }
         }
 
         //Wire up the checkbox via lambda
