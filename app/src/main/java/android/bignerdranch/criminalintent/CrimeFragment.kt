@@ -65,7 +65,7 @@ class CrimeFragment : Fragment() {
         //Update the button text and OnClickListener
         dateButton.text = crime.date.toString()
         dateButton.setOnClickListener {
-            DatePickerFragment().apply {
+            DatePickerFragment.newInstance(crime.date).apply {
                 val fragmentManager = this@CrimeFragment.fragmentManager
                 show(fragmentManager, DIALOG_DATE)
             }
