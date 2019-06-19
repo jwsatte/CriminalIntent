@@ -1,6 +1,9 @@
 package android.bignerdranch.criminalintent
 
+import android.app.Activity
 import android.app.Dialog
+import android.app.IntentService
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.DatePicker
@@ -31,11 +34,28 @@ class DatePickerFragment : DialogFragment() {
         return AlertDialog.Builder(requireContext())
             .setView(view)
             .setTitle(R.string.date_picker_title)
-            .setPositiveButton(android.R.string.ok, null)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val resultDate = GregorianCalendar(datePicker.year,
+                    datePicker.month,
+                    datePicker.dayOfMonth).time
+                sendResult(Activity.RESULT_OK, resultDate)
+            }
             .create()
     }
 
+    private fun sendResult(resultCode: Int, date: Date){
+        targetFragment?.let {
+            val intent = Intent().apply {
+                putExtra(EXTRA_DATE, date)
+            }
+
+            it.onActivityResult(targetRequestCode, resultCode, intent)
+        }
+    }
+
     companion object {
+        const val EXTRA_DATE = "com.bignerdranch.android.criminalintent.date"
+
         fun newInstance(date: Date): DatePickerFragment {
             val args = Bundle().apply {
                 putSerializable(ARG_DATE, date)

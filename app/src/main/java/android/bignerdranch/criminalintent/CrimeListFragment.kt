@@ -7,14 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.w3c.dom.Text
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class CrimeListFragment : Fragment() {
@@ -58,7 +54,7 @@ class CrimeListFragment : Fragment() {
             this.crime = crime
             titleTextView.text = this.crime.title
 
-            val outputPattern = "E, MMMMM d, yyyy"
+            val outputPattern = "E, MMM, d, yyyy"
             val outputFormat = SimpleDateFormat(outputPattern, Locale.US)
 
             dateTextView.text = outputFormat.format(this.crime.date)
