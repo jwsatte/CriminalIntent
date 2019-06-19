@@ -1,5 +1,7 @@
 package android.bignerdranch.criminalintent
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,9 +12,12 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_crime.view.*
 import java.util.*
 
 private const val ARG_CRIME_ID = "crime_id"
+private const val DIALOG_DATE = "DialogDate"
+private const val REQUEST_DATE = 0
 
 class CrimeFragment : Fragment() {
 
@@ -61,10 +66,14 @@ class CrimeFragment : Fragment() {
             addTextChangedListener(titleWatcher)
         }
 
-        //Update the button text and enabled flag
-        dateButton.apply {
-            text = crime.date.toString()
-            isEnabled = false
+        //Update the button text and OnClickListener
+        updateDate()
+        dateButton.setOnClickListener {
+            DatePickerFragment.newInstance(crime.date).apply {
+                setTargetFragment(this@CrimeFragment, REQUEST_DATE)
+                val fragmentManager = this@CrimeFragment.fragmentManager
+                show(fragmentManager, DIALOG_DATE)
+            }
         }
 
         //Wire up the checkbox via lambda
@@ -76,6 +85,21 @@ class CrimeFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when {
+            resultCode != Activity.RESULT_OK -> return
+            requestCode == REQUEST_DATE && data != null -> {
+                val date = data.getSerializableExtra(DatePickerFragment.EXTRA_DATE) as Date
+                crime.date = date
+                updateDate()
+            }
+        }
+    }
+
+    private fun updateDate() {
+        dateButton.text = crime.date.toString()
     }
 
     companion object {
