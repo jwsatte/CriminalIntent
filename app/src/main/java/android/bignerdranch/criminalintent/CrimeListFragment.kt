@@ -84,7 +84,7 @@ class CrimeListFragment : Fragment() {
         val crimeLab = CrimeLab.get()
         val crimeCount = crimeLab.getCrimes().size
         val subtitle =  if (subtitleVisible) {
-            getString(R.string.subtitle_format, crimeCount)
+                resources.getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount)
         } else {
             ""
         }
