@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,8 +53,21 @@ class CrimeListFragment : Fragment() {
                 startActivity(intent)
                 return true
             }
+            R.id.show_subtitle -> {
+                updateSubtitle()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun updateSubtitle() {
+        val crimeLab = CrimeLab.get()
+        val crimeCount = crimeLab.getCrimes().size
+        val subtitle = getString(R.string.subtitle_format, crimeCount)
+
+        val activity = activity as AppCompatActivity
+        activity.supportActionBar?.subtitle = subtitle
     }
 
     private inner class CrimeHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
