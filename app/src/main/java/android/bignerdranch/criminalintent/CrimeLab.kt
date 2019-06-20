@@ -7,13 +7,13 @@ class CrimeLab private constructor(context: Context) {
 
     private val crimes = mutableListOf<Crime>()
 
-    init {
-        for (i in 0 until 100) {
-            val crime = Crime()
-            crime.title = "Crime #$i"
-            crime.isSolved = i % 2 == 0
-            crimes += crime
-        }
+    fun addCrime(crime: Crime) {
+        crimes.add(crime)
+    }
+
+    fun deleteCrime(crime: Crime){
+        val index = crimes.indexOf(crime)
+        if (index >= 0) crimes.removeAt(index)
     }
 
     fun getCrimes(): List<Crime> {

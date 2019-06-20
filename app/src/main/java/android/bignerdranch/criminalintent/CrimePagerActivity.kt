@@ -30,7 +30,9 @@ class CrimePagerActivity : AppCompatActivity() {
             adapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
                 override fun getItem(position: Int): Fragment {
                     val crime = crimes[position]
-                    return CrimeFragment.newInstance(crime.id)
+                    return CrimeFragment.newInstance(crime.id) {
+                        finish()
+                    }
                 }
 
                 override fun getCount() = crimes.size
