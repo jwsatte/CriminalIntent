@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val SAVED_SUBTITLE_VISIBLE = "subtitle"
+
 class CrimeListFragment : Fragment() {
 
     private lateinit var crimeRecyclerView: RecyclerView
     private var adapter: CrimeAdapter? = null
+    private var subtitleVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +32,8 @@ class CrimeListFragment : Fragment() {
         crimeRecyclerView = view.findViewById(R.id.crime_recycler_view) as RecyclerView
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 
+        subtitleVisible = savedInstanceState?.getBoolean(SAVED_SUBTITLE_VISIBLE) ?: false
+
         updateUI()
 
         return view
@@ -39,9 +44,21 @@ class CrimeListFragment : Fragment() {
         updateUI()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, subtitleVisible)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.fragment_crime_list, menu)
+
+        val subtitleItem = menu?.findItem(R.id.show_subtitle)
+        subtitleItem?.title = if (subtitleVisible) {
+            getString(R.string.hide_subtitle)
+        } else {
+            getString(R.string.show_subtitle)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -54,6 +71,8 @@ class CrimeListFragment : Fragment() {
                 return true
             }
             R.id.show_subtitle -> {
+                subtitleVisible = !subtitleVisible
+                activity?.invalidateOptionsMenu()
                 updateSubtitle()
                 return true
             }
@@ -64,7 +83,11 @@ class CrimeListFragment : Fragment() {
     private fun updateSubtitle() {
         val crimeLab = CrimeLab.get()
         val crimeCount = crimeLab.getCrimes().size
-        val subtitle = getString(R.string.subtitle_format, crimeCount)
+        val subtitle =  if (subtitleVisible) {
+            getString(R.string.subtitle_format, crimeCount)
+        } else {
+            ""
+        }
 
         val activity = activity as AppCompatActivity
         activity.supportActionBar?.subtitle = subtitle
@@ -134,5 +157,7 @@ class CrimeListFragment : Fragment() {
             adapter = CrimeAdapter(crimes)
             crimeRecyclerView.adapter = adapter
         }
+
+        updateSubtitle()
     }
 }

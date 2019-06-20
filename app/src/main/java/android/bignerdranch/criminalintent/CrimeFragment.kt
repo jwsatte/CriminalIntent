@@ -19,12 +19,13 @@ private const val ARG_CRIME_ID = "crime_id"
 private const val DIALOG_DATE = "DialogDate"
 private const val REQUEST_DATE = 0
 
-class CrimeFragment : Fragment() {
+class CrimeFragment(private val onCrimeDeleted: (()->Unit)? = null) : Fragment() {
 
     private lateinit var crime: Crime
     private lateinit var titleField: EditText
     private lateinit var dateButton: Button
     private lateinit var solvedCheckBox: CheckBox
+    private lateinit var deleteButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,7 @@ class CrimeFragment : Fragment() {
         titleField = view.findViewById(R.id.crime_title) as EditText
         dateButton = view.findViewById(R.id.crime_date) as Button
         solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
+        deleteButton = view.findViewById(R.id.crime_delete) as Button
 
         //Anonymous mehthod to observe text changes
         val titleWatcher = object: TextWatcher {
@@ -84,6 +86,10 @@ class CrimeFragment : Fragment() {
             }
         }
 
+        deleteButton.setOnClickListener {
+            CrimeLab.get().deleteCrime(crime)
+            onCrimeDeleted?.invoke() //Calling the parent .finish() method
+        }
         return view
     }
 
@@ -103,11 +109,11 @@ class CrimeFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(crimeId: UUID): CrimeFragment {
+        fun newInstance(crimeId: UUID, onCrimeDeleted: () -> Unit): CrimeFragment {
             val args = Bundle().apply {
                 putSerializable(ARG_CRIME_ID, crimeId)
             }
-            return CrimeFragment().apply {
+            return CrimeFragment(onCrimeDeleted).apply {
                 arguments = args
             }
         }

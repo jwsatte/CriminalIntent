@@ -11,6 +11,11 @@ class CrimeLab private constructor(context: Context) {
         crimes.add(crime)
     }
 
+    fun deleteCrime(crime: Crime){
+        val index = crimes.indexOf(crime)
+        if (index >= 0) crimes.removeAt(index)
+    }
+
     fun getCrimes(): List<Crime> {
         return crimes
     }
