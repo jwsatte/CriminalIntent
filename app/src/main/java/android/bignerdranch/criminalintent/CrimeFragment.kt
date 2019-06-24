@@ -104,6 +104,12 @@ class CrimeFragment(private val onCrimeDeleted: (()->Unit)? = null) : Fragment()
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        CrimeLab.get().updateCrime(crime)
+    }
+
     private fun updateDate() {
         dateButton.text = crime.date.toString()
     }
