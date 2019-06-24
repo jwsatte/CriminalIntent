@@ -61,7 +61,16 @@ class CrimeLab private constructor(context: Context) {
     }
 
     fun getCrime(id: UUID): Crime? {
-        return null
+        val cursor = queryCrimes("${CrimeTable.Cols.UUID} = ?", arrayOf(id.toString()))
+
+        cursor.use {
+            if (it.count == 0) {
+                return null
+            }
+
+            cursor.moveToFirst()
+            return cursor.getCrime()
+        }
     }
 
     private fun getContentValues(crime: Crime): ContentValues {
